@@ -1,5 +1,7 @@
 import argparse
 
+import Image
+
 
 # PROBLEMA:
 # Crear un programa con una función llamada 'scorpion' que
