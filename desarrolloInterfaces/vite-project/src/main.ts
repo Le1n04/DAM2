@@ -1,5 +1,5 @@
 import './style.css'
-import './topics/01-tipos-basicos.ts'
+import './topics/t3e6janssen.ts'
 
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
