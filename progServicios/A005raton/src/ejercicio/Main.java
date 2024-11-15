@@ -64,5 +64,5 @@ public class Main
         
         System.out.println("Todos los ratones han terminado de comer.");
         System.out.println("Han tardado: " + duration.toString().substring(2));
-    }
+//    }
 }
