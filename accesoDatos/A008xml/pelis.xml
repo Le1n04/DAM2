@@ -1,0 +1,17 @@
+<peliculas>
+    <pelicula titulo="Uno de los nuestros">
+      <estreno>1990</estreno>
+      <titulo>Goodfellas</titulo>
+      <director pais="UK">Martin Scorsese</director>
+    </pelicula>
+    <pelicula titulo="Thelma y Louise">
+      <estreno>1991</estreno>
+      <titulo>Thelma and Louise</titulo>
+      <director  pais="UK">Ridley Scott</director>
+    </pelicula>
+    <pelicula titulo="El truco final">
+      <estreno>2006</estreno>
+      <titulo>The Prestige</titulo>
+      <director  pais="UK">Christopher Nolan</director>
+    </pelicula>
+</peliculas>
