@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/Lein/Documents/GitHub/DAm2/progServicios/A009transacciones/sqlite-jdbc-3.46.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/dam2/Documents/GitHub/DAM2/accesoDatos/A010bbdd/sqlite-jdbc-3.46.1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

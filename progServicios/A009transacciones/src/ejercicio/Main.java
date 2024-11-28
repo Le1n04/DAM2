@@ -35,6 +35,7 @@ public class Main
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS pedidos (" +
                                "codped INTEGER PRIMARY KEY, " +
                                "fecha DATE, " +
+                               "fecha_entrega DATE, " +
                                "codcli INTEGER, " +
                                "direccion TEXT, " +
                                "codart INTEGER, " +
@@ -99,15 +100,31 @@ public class Main
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next())
-            {
-                return rs.getInt(1) > 0; // If count is greater than 0, the article exists
-            }
+                return rs.getInt(1) > 0;
         }
         catch (SQLException e)
         {
             e.printStackTrace();
         }
-        return false; // If there's an issue or article doesn't exist, return false
+        return false;
+    }
+    
+    private static boolean verificarExistenciaPedido(int codPed, Connection con)
+    {
+        try
+        {
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM pedidos WHERE codped = ?");
+            stmt.setInt(1, codPed);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next())
+                return rs.getInt(1) > 0; 
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private static boolean verificarExistenciaRider(int codRider, Connection con)
@@ -119,9 +136,7 @@ public class Main
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next())
-            {
                 return rs.getInt(1) > 0; // Si el conteo es mayor que 0, el rider existe
-            }
         }
         catch (SQLException e)
         {
@@ -147,22 +162,16 @@ public class Main
 
             // Verificar si el artículo existe
             if (!verificarExistenciaArticulo(codArt, con))
-            {
                 return "El código de artículo no existe.";
-            }
 
             int codRider = getRiderDisponible(con);
             if (codRider == 0)
-            {
                 return "No hay riders disponibles.";
-            }
 
             // Verificar si el rider existe y está disponible
             if (!verificarExistenciaRider(codRider, con))
-            {
                 return "El rider no existe o no está disponible.";
-            }
-
+            
             insert(getCountPedido(con) + 1, LocalDate.now(), Integer.parseInt(infoCliente[0]), infoCliente[1], codArt, cantidad, codRider, 'N', con);
             actualizarDatos(con, cantidad, codRider, codArt);
 
@@ -178,25 +187,22 @@ public class Main
                     Thread.sleep(tiempoEspera);
 
                     // Actualizar las tablas de pedido y rider para simular la entrega
-                    try (Connection con2 = DriverManager.getConnection("jdbc:sqlite:wow.db"))
-                    {
-                        int codped = getCountPedido(con2); // Obtener el último pedido realizado
+                    int codped = getCountPedido(con); // Obtener el último pedido realizado
 
-                        // Actualizar la tabla pedidos, marcando como entregado
-                        String updatePedido = "UPDATE pedidos SET completado = 'S', fecha_entrega = ? WHERE codped = ?";
-                        PreparedStatement stmtPedido = con2.prepareStatement(updatePedido);
-                        stmtPedido.setString(1, LocalDate.now().toString()); // Fecha y hora de la entrega
-                        stmtPedido.setInt(2, codped);
-                        stmtPedido.executeUpdate();
+                    // Actualizar la tabla pedidos, marcando como entregado
+                    String updatePedido = "UPDATE pedidos SET completado = 'S', fecha_entrega = ? WHERE codped = ?";
+                    PreparedStatement stmtPedido = con.prepareStatement(updatePedido);
+                    stmtPedido.setString(1, LocalDate.now().toString()); // Fecha y hora de la entrega
+                    stmtPedido.setInt(2, codped);
+                    stmtPedido.executeUpdate();
 
-                        // Actualizar la tabla riders, marcando al rider como disponible
-                        String updateRider = "UPDATE riders SET disponible = 'S' WHERE codigo = ?";
-                        PreparedStatement stmtRider = con2.prepareStatement(updateRider);
-                        stmtRider.setInt(1, codRider);
-                        stmtRider.executeUpdate();
+                    // Actualizar la tabla riders, marcando al rider como disponible
+                    String updateRider = "UPDATE riders SET disponible = 'S' WHERE codigo = ?";
+                    PreparedStatement stmtRider = con.prepareStatement(updateRider);
+                    stmtRider.setInt(1, codRider);
+                    stmtRider.executeUpdate();
 
-                        System.out.println("Entrega realizada con éxito. El pedido ha sido entregado y el rider está disponible nuevamente.");
-                    }
+                    System.out.println("Entrega realizada con éxito. El pedido ha sido entregado y el rider está disponible nuevamente.");
 
                 }
                 catch (InterruptedException e)
@@ -334,21 +340,22 @@ public class Main
     	{
     		ResultSet result = con.createStatement().executeQuery("SELECT * FROM pedidos");
     		System.out.println();
-    		System.out.printf("%-10s %-15s %-10s %-20s %-10s %-10s %-10s %-10s\n", "CodPed", "Fecha", "CodCli", "Direccion", "CodArt", "Cantidad", "codRider", "disponible");
-    		System.out.println("-------------------------------------------------------------------------------------------------------------");
+    		System.out.printf("%-10s %-15s %-15s %-10s %-20s %-10s %-10s %-10s %-10s\n", "CodPed", "Fecha", "FechaEntrega" , "CodCli", "Direccion", "CodArt", "Cantidad", "codRider", "Completado");
+    		System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
     		
     		while (result.next())
     		{
                 int codPed = result.getInt("codped");
                 String fecha = result.getString("fecha");
                 int codCli = result.getInt("codcli");
+                String fecha_entrega = result.getString("fecha_entrega");
                 String direccion = result.getString("direccion");
                 int codArt = result.getInt("codart");
                 int cantidad = result.getInt("cantidad");
                 int codRider = result.getInt("codrider");
                 String completado = result.getString("completado");
 
-                System.out.printf("%-10d %-15s %-10d %-20s %-10d %-10d %-10d %-15s\n", codPed, fecha, codCli, direccion, codArt, cantidad, codRider, completado);
+                System.out.printf("%-10d %-15s %-15s %-10d %-20s %-10d %-10d %-10d %-15s\n", codPed, fecha, fecha_entrega, codCli, direccion, codArt, cantidad, codRider, completado);
     		}
     	}
     	catch (SQLException e)
@@ -357,28 +364,31 @@ public class Main
 		}
     }
     
-    private static void actualizarDatos(Connection con, int cantidad, int rider, int codart)
+    private static void actualizarDatos(Connection con, int cantidad, int rider, int codped)
     {
         try
         {
+            // Actualizar existencias de artículos
             PreparedStatement stmtArticulos = con.prepareStatement("UPDATE articulos SET existencias = existencias - ? WHERE codart = ?");
             stmtArticulos.setInt(1, cantidad);
-            stmtArticulos.setInt(2, codart);
+            stmtArticulos.setInt(2, codped); // Aquí usaremos el codart correspondiente
             stmtArticulos.executeUpdate();
 
+            // Marcar rider como no disponible
             PreparedStatement stmtRider = con.prepareStatement("UPDATE riders SET disponible = ? WHERE codigo = ?");
             stmtRider.setString(1, "N");
             stmtRider.setInt(2, rider);
             stmtRider.executeUpdate();
-            
+
+            // Insertar en la tabla envíos
             String sqlEnvios = "INSERT INTO envios (codped, codrider, terminado) VALUES (?, ?, ?)";
             PreparedStatement stmtEnvios = con.prepareStatement(sqlEnvios);
-            stmtEnvios.setInt(1, codart); // El codped se asocia con el rider actual
-            stmtEnvios.setInt(2, rider); // El codrider se asocia con el rider actual
-            stmtEnvios.setString(3, "N");
+            stmtEnvios.setInt(1, codped); // El código correcto del pedido
+            stmtEnvios.setInt(2, rider); // Rider actual
+            stmtEnvios.setString(3, "N"); // Pedido aún no terminado
             stmtEnvios.executeUpdate();
 
-            System.out.println("Datos actualizados correctamente: artículo, rider y envio.");
+            System.out.println("Datos actualizados correctamente: artículo, rider y envío.");
         }
         catch (Exception ex)
         {
@@ -386,12 +396,39 @@ public class Main
         }
     }
 
+
     private static void finalizarPedido(Scanner input, Connection con)
     {
     	System.out.printf("Introduce el numero de pedido que quieres completar: ");
     	int codped = input.nextInt();
     	
     	// mirar si existe el pedido, cambiarlo por completado y actualizar el rider que estaba a cargo
+    	if (verificarExistenciaPedido(codped, con))
+    	{
+    		try
+    		{
+    			PreparedStatement stmtPedidos = con.prepareStatement("UPDATE pedidos SET completado = 'S' WHERE codped = ?");
+                stmtPedidos.setInt(1, codped);
+                stmtPedidos.executeUpdate();
+                
+                PreparedStatement stmtRider = con.prepareStatement("UPDATE riders SET disponible = 'S' WHERE codigo = ?");
+                
+                PreparedStatement stmtCodRider = con.prepareStatement("SELECT codrider FROM pedidos WHERE codped = ?");
+                stmtCodRider.setInt(1, codped);
+                ResultSet rsCodRider = stmtCodRider.executeQuery();
+                int codRider = 0;
+                if (rsCodRider.next())
+                    codRider = rsCodRider.getInt(1);
+                
+                stmtRider.setInt(1, codRider);
+                stmtRider.executeUpdate();
+    		}
+    		catch (Exception ex)
+    		{
+    			System.out.println(ex.getMessage());
+    		}
+    	}
+    	
     }
     
     public static void main(String[] args)
@@ -418,10 +455,11 @@ public class Main
             		System.out.println(hacerPedido(input, con));
             		break;
             	case 2:
-            		finalizarPedido(input, con);
+            		finalizarPedido(input, con); // esta opcion la tenia para cuando no se actualizaba el resultado solo con el hilo
             		break;
             	case 3:
             		mostrarPedidos(con);
+            		break;
             	case 9:
             		System.out.println("Conexión finalizada.");
             		break;
