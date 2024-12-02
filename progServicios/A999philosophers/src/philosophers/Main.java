@@ -5,24 +5,18 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main
 {
-	// defining the number of philosophers  
-	static int philosopher = 5;
-	// initializing an array of philosophers with the number of philosophers  
-	static Philosopher philosophers[] = new Philosopher[philosopher];
-	// initializing an array of chopsticks with the number of philosophers  
-	static Chopstick chopsticks[] = new Chopstick[philosopher];
+	static int filosofos = 5;
+	static Filosofo filosofosArray[] = new Filosofo[filosofos];
+	static Palillo palillos[] = new Palillo[filosofos];
 
-	static class Chopstick
+	static class Palillo
 	{
-		// creating a constructor of the Semaphore class that accepts the number of permits  
 		public Semaphore mutex = new Semaphore(1);
 
-		// the method grabs the chopstick  
-		void grab()
+		void tomar()
 		{
 			try
 			{
-				// acquires a permit from the semaphore  
 				mutex.acquire();
 			}
 			catch (Exception e)
@@ -31,129 +25,109 @@ public class Main
 			}
 		}
 
-		// release the chopstick  
-		void release()
+		void soltar()
 		{
-			// releases an acquire a permit and increases the number of available permits by one  
 			mutex.release();
 		}
 
-		// checks if the chopstick is free or not  
-		boolean isFree()
+		boolean estaLibre()
 		{
-			// the method returns the current number of permits available in the semaphore  
-			// returns true if available permits is greater than 0, else returns false  
 			return mutex.availablePermits() > 0;
 		}
-	} // end of Chopstick class
+	}
 
-	static class Philosopher extends Thread
+	static class Filosofo extends Thread
 	{
-		public int number;
-		// represents left chopstick  
-		public Chopstick leftchopstick;
-		// represents right chopstick  
-		public Chopstick rightchopstick;
+		public int numero;
+		public Palillo palilloIzquierdo;
+		public Palillo palilloDerecho;
 
-		// creating a constructor of the Philosopher class  
-		Philosopher(int num, Chopstick left, Chopstick right)
+		Filosofo(int num, Palillo izquierdo, Palillo derecho)
 		{
-			number = num;
-			leftchopstick = left;
-			rightchopstick = right;
+			numero = num;
+			palilloIzquierdo = izquierdo;
+			palilloDerecho = derecho;
 		}
 
 		public void run()
 		{
 			while (true)
 			{
-				// if philosopher number is even, grab right chopstick first to avoid deadlock
-				if (number % 	 2 == 0)
+				if (numero % 2 == 0)
 				{
-					rightchopstick.grab();
-					System.out.println("Philosopher " + (number + 1) + " grabs right chopstick.");
-					leftchopstick.grab();
-					System.out.println("Philosopher " + (number + 1) + " grabs left chopstick.");
+					palilloDerecho.tomar();
+					System.out.println("Filósofo " + (numero + 1) + " toma el palillo derecho.");
+					palilloIzquierdo.tomar();
+					System.out.println("Filósofo " + (numero + 1) + " toma el palillo izquierdo.");
 				}
 				else
 				{
-					leftchopstick.grab();
-					System.out.println("Philosopher " + (number + 1) + " grabs left chopstick.");
-					rightchopstick.grab();
-					System.out.println("Philosopher " + (number + 1) + " grabs right chopstick.");
+					palilloIzquierdo.tomar();
+					System.out.println("Filósofo " + (numero + 1) + " toma el palillo izquierdo.");
+					palilloDerecho.tomar();
+					System.out.println("Filósofo " + (numero + 1) + " toma el palillo derecho.");
 				}
-				// hunger philosopher starts eating   
-				eat();
-				// releases left and right chopsticks when philosopher is not hungry  
-				leftchopstick.release();
-				System.out.println("Philosopher " + (number + 1) + " releases left chopstick.");
-				rightchopstick.release();
-				System.out.println("Philosopher " + (number + 1) + " releases right chopstick.");
-			} // end of while loop
-		} // end of run() method
+				comer();
+				palilloIzquierdo.soltar();
+				System.out.println("Filósofo " + (numero + 1) + " suelta el palillo izquierdo.");
+				palilloDerecho.soltar();
+				System.out.println("Filósofo " + (numero + 1) + " suelta el palillo derecho.");
+			}
+		}
 
-		// the method invokes after grabbing both the chopsticks (left and right)  
-		void eat()
+		void comer()
 		{
 			try
 			{
-				// determines the pseudorandom number between 0 to 2000 that represents the sleep time in milliseconds  
-				int sleepTime = ThreadLocalRandom.current().nextInt(0, 2000);
-				System.out.println("Philosopher " + (number + 1) + " eats for " + sleepTime + "ms");
-				// sleeps the thread for a specified time
-				Thread.sleep(sleepTime);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace(System.out);
-			}
-		} // end of eat() method
-	}
-
-	public static void main(String args[])
-	{
-		// loop iterates over chopsticks  
-		for (int i = 0; i < philosopher; i++)
-			chopsticks[i] = new Chopstick();
-		// loop iterates over philosophers  
-		for (int i = 0; i < philosopher; i++)
-		{
-			philosophers[i] = new Philosopher(i, chopsticks[i], chopsticks[(i + 1) % philosopher]);
-			// begins the execution of the thread  
-			philosophers[i].start();
-		} // end of for loop
-		while (true)
-		{
-			try
-			{
-				// thread sleep for 2000ms  
-				Thread.sleep(2000);
-				// check for deadlock condition  
-				boolean deadlock = true;
-				// for each loop iterates over chopsticks  
-				for (Chopstick cs : chopsticks)
-				{
-					// checks if chopstick is free or not   
-					if (cs.isFree())
-					{
-						deadlock = false;
-						break;
-					} // end of if
-				} // end of for loop
-				// deadlock occurs if sleep time is 2000ms it means each philosopher is eating  
-				if (deadlock)
-				{
-					Thread.sleep(2000);
-					System.out.println("Everyone Eats");
-					break;
-				} // end of if
+				int tiempoDormir = ThreadLocalRandom.current().nextInt(0, 2000);
+				System.out.println("Filósofo " + (numero + 1) + " come durante " + tiempoDormir + "ms");
+				Thread.sleep(tiempoDormir);
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace(System.out);
 			}
 		}
-		System.out.println("Exit The Program!");
+	}
+
+	public static void main(String args[])
+	{
+		for (int i = 0; i < filosofos; i++)
+			palillos[i] = new Palillo();
+		for (int i = 0; i < filosofos; i++)
+		{
+			filosofosArray[i] = new Filosofo(i, palillos[i], palillos[(i + 1) % filosofos]);
+			filosofosArray[i].start();
+		}
+		while (true)
+		{
+			try
+			{
+				Thread.sleep(2000);
+				boolean interbloqueo = true;
+
+				for (Palillo palillo : palillos)
+				{
+					if (palillo.estaLibre())
+					{
+						interbloqueo = false;
+						break;
+					}
+				}
+
+				if (interbloqueo)
+				{
+					Thread.sleep(2000);
+					System.out.println("Todos Comen");
+					break;
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace(System.out);
+			}
+		}
+		System.out.println("Saliendo del programa...");
 		System.exit(0);
 	}
 }
