@@ -36,7 +36,7 @@ public class Main
 
         private void usarBano() throws InterruptedException
         {
-            int tiempoUso = ThreadLocalRandom.current().nextInt(1000, 3000);
+            int tiempoUso = ThreadLocalRandom.current().nextInt(3000, 8000);
             Thread.sleep(tiempoUso);
         }
     }
