@@ -110,7 +110,7 @@ def eliminar_material():
         print(f"no se ha encontado ningun material con la ID {id}")    
 
 def generar_estadisticas():
-    total_materiales = len(materiales) # un len para saber cuantos materiales ay
+    total_materiales = len(materiales) # un len para saber cuantos materiales hay
     num_libros = sum(1 for m in materiales.values() if isinstance(m, Libro)) # hago una suma de lo que se encuentre en materiales y sea libros
     num_revistas = total_materiales - num_libros # restando los libros a las revistas nos da el otro tipo
     promedio_paginas = sum(m.num_paginas for m in materiales.values() if isinstance(m, Libro)) / num_libros if num_libros > 0 else 0 # hago una media teniendo cuidado en la division entre 0

@@ -14,10 +14,13 @@
       'list-group-item-danger': isUltimo
     }"
     >
-    
-    <span>{{personaje.nombre}} - </span>
-    <strong>Fuerza: </strong>
-    <span>{{personaje.fuerza}}</span>
-    <span> | Indice: {{i}} - Es Par: {{esPar}} - Es el ultimo: {{isUltimo}}</span>
+    <div>
+      <span>{{personaje.nombre}} - </span>
+      <strong>Fuerza: </strong>
+      <span>{{personaje.fuerza}}</span>
+      <span> | Indice: {{i}} - Es Par: {{esPar}} - Es el ultimo: {{isUltimo}}</span>
+    </div>
+
+    <button class="btn btn-danger" (click)="eliminarPersonaje(i)">X</button>
   </li>
 </ul>
