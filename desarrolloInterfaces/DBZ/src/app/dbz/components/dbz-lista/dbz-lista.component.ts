@@ -9,13 +9,13 @@ import { Personaje } from '../../interfaces/personaje.interface';
 export class DbzListaComponent {
   @Input('miLista')
   public listaPersonajes: Personaje[] = [{
-    nombre: 'Trunks', fuerza: 7000
+    id: '1', nombre: 'Trunks', fuerza: 7000
   }];
 
   @Output()
-  public onEliminarPersonaje = new EventEmitter<number>();
+  public onEliminarPersonaje = new EventEmitter<string>();
 
-  eliminarPersonaje(indice: number): void {
-    this.onEliminarPersonaje.emit(indice);
+  eliminarPersonaje(id: string): void {
+    this.onEliminarPersonaje.emit(id);
   }
 }

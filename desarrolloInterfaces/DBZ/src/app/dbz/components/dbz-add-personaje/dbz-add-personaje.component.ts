@@ -9,22 +9,18 @@ import { Personaje } from '../../interfaces/personaje.interface';
 export class DbzAddPersonajeComponent {
 
   @Output()
-  public onNewPersonaje: EventEmitter<Personaje> = new EventEmitter();
+  public onNewPersonaje: EventEmitter<Omit<Personaje, 'id'>> = new EventEmitter();
 
-  public personaje : Personaje = {
+  public personaje: Omit<Personaje, 'id'> = {
     nombre: '',
     fuerza: 0
   }
 
   public addPersonaje(): void {
-    //debugger;
-    console.log(this.personaje);
-    if (this.personaje.nombre.length === 0) return;
+    if (this.personaje.nombre.trim().length === 0) return;
+
     this.onNewPersonaje.emit(this.personaje);
-    this.personaje={ nombre: '', fuerza: 0 };
+
+    this.personaje = { nombre: '', fuerza: 0 };
   }
 }
-
-
-
-
