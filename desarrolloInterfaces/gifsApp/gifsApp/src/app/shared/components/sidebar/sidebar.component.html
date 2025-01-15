@@ -3,8 +3,11 @@
     <hr>
 
     <div class="list-group list-reset">
-        <button class="list-group-item list-group-item-action">
-            cal o futi
+        <button 
+            class="list-group-item list-group-item-action" 
+            *ngFor="let etiqueta of history" 
+            (click)="onSelect(etiqueta)">
+            {{ etiqueta }}
         </button>
     </div>
 </div>
