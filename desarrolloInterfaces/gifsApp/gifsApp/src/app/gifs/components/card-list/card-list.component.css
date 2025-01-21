@@ -1,0 +1,11 @@
+.horizontal-row {
+    display: flex;
+    gap: 20px;
+    padding: 0 20px;
+    overflow-x: auto;
+}
+
+.card {
+    flex: 1 1 200px;
+    max-width: 500px;
+}
