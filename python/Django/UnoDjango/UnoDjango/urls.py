@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path
-from . import views # Importo nuestro módulo views
+from core import views  # Importa el módulo completo en lugar de funciones individuales
 
 urlpatterns = [
-    path('', views.index), #indicamos que la vista la queremos mostrar en esa ruta.
-    path('otramas/', views.home), #nueva vista
+    path('', views.index, name="index"),  # Usa nombres para evitar conflictos
+    path('home/', views.home, name="home"),  # Cambia la URL a 'home/' en lugar de duplicar ''
     path('admin/', admin.site.urls),
 ]
