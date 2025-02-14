@@ -36,9 +36,24 @@ export class GifsService {
       this.listadoGifs = resp.data;
       console.log({gifs: this.listadoGifs});
     })
+    this.almacenarLocalStorage();
   }
-  constructor( private http: HttpClient) {
 
+  private almacenarLocalStorage(): void {
+    localStorage.setItem('historial', JSON.stringify(this._historialEtiquetas));
+  }
+
+  private cargarLocalStorage(): void {
+    if (!localStorage.getItem('historial')) return;
+    this._historialEtiquetas = JSON.parse(localStorage.getItem('historial')!);
+    if (this._historialEtiquetas.length === 0) return;
+    this.buscarEtiqueta(this._historialEtiquetas[0]);
+  }
+
+
+
+  constructor( private http: HttpClient) {
+    this.cargarLocalStorage();
   }
 }
 

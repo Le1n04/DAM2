@@ -1,0 +1,115 @@
+[{
+  "_id": {
+    "$oid": "67aa18c9362910032ef32c20"
+  },
+  "nombre": "Monitor 4K",
+  "descripcion": "Monitor de alta resolución",
+  "precio": 495.96277087074384,
+  "categoria": "Electrónica",
+  "stock": 15,
+  "proveedores": [
+    "Proveedor A",
+    "Proveedor B",
+    "Proveedor A",
+    "Proveedor B",
+    "Proveedor A",
+    "Proveedor A",
+    "Proveedor B",
+    "Proveedor B",
+    "Proveedor A",
+    "Proveedor B"
+  ]
+},
+{
+  "_id": {
+    "$oid": "67aa18d95f92d7654d7a7105"
+  },
+  "nombre": "Monitor 4K",
+  "descripcion": "Monitor de alta resolución",
+  "precio": 472.34549606737505,
+  "categoria": "Electrónica",
+  "stock": 15
+},
+{
+  "_id": {
+    "$oid": "67aa1952ef5c6a00cd426d60"
+  },
+  "nombre": "Laptop Gamer X",
+  "descripcion": "Potente laptop",
+  "precio": 2249.3092533975005,
+  "categoria": "Electrónica",
+  "stock": 20,
+  "fecha_creacion": "2024-05-08"
+},
+{
+  "_id": {
+    "$oid": "67aa1952ef5c6a00cd426d61"
+  },
+  "nombre": "Silla gamer",
+  "descripcion": "Silla de oficina.",
+  "precio": 299.99,
+  "categoria": "Mobiliario",
+  "stock": 50,
+  "fecha_creacion": "2024-05-08"
+},
+{
+  "_id": {
+    "$oid": "67aa1952ef5c6a00cd426d62"
+  },
+  "nombre": "Libro de Cocina",
+  "descripcion": "Recetas deliciosas de la abuela.",
+  "precio": 24.99,
+  "categoria": "Libros",
+  "stock": 100,
+  "fecha_creacion": "2024-05-08"
+},
+{
+  "_id": {
+    "$oid": "67aa1fd8b605f95e18c5017e"
+  },
+  "nombre": "Monitor 4K",
+  "descripcion": "Monitor de alta resolución",
+  "precio": 449.8528533975001,
+  "categoria": "Electrónica",
+  "stock": 15
+},
+{
+  "_id": {
+    "$oid": "67aa2359967bf6118bd7e132"
+  },
+  "nombre": "Monitor 4K",
+  "descripcion": "Monitor de alta resolución",
+  "precio": 419.9895,
+  "categoria": "Electrónica",
+  "stock": 15
+},
+{
+  "_id": {
+    "$oid": "67aa25476d5be0ae7a96248d"
+  },
+  "nombre": "Monitor 2K",
+  "descripcion": "Lo que sea",
+  "precio": 10,
+  "categoria": "Electrónica",
+  "stock": 5
+},
+{
+  "_id": {
+    "$oid": "67aa25476d5be0ae7a96248e"
+  },
+  "nombre": "Monitor 1080p",
+  "descripcion": "Lo que sea 2",
+  "precio": 2,
+  "categoria": "Electrónica",
+  "stock": 2
+},
+{
+  "_id": {
+    "$oid": "67aa25476d5be0ae7a96248f"
+  },
+  "nombre": "Monitor 720p",
+  "descripcion": "Lo que sea 3",
+  "precio": 3,
+  "categoria": "Electrónica",
+  "stock": 3
+}]

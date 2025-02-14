@@ -1,0 +1,26 @@
+[
+  {
+    "nombre": "Laptop Gamer X",
+    "descripcion": "Potente laptop",
+    "precio": 1999.99,
+    "categoria": "Electrónica",
+    "stock": 20,
+    "fecha_creacion": "2024-05-08"
+  },
+  {
+    "nombre": "Silla gamer",
+    "descripcion": "Silla de oficina.",
+    "precio": 299.99,
+    "categoria": "Mobiliario",
+    "stock": 50,
+    "fecha_creacion": "2024-05-08"
+  },
+  {
+    "nombre": "Libro de Cocina",
+    "descripcion": "Recetas deliciosas de la abuela.",
+    "precio": 24.99,
+    "categoria": "Libros",
+    "stock": 100,
+    "fecha_creacion": "2024-05-08"
+  }
+]
