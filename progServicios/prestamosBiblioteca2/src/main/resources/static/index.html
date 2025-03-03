@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Biblioteca</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900 font-sans p-8">
+    
+    <div class="max-w-2xl mx-auto p-6 bg-gray-100 shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold text-center mb-6">Gestión Biblioteca</h1>
+        
+        <!-- Buscar Libros -->
+        <section id="buscar" class="mb-8 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Buscar Libros</h2>
+            <input type="text" id="titulo" class="w-full p-3 rounded bg-gray-200 text-gray-900" placeholder="Título del libro">
+            <button onclick="buscarLibros()" class="mt-4 w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700">Buscar</button>
+            <ul id="resultadoLibros" class="mt-4 text-gray-700 space-y-2"></ul>
+        </section>
+        
+        <!-- Registrar Lector -->
+        <section id="registrarLector" class="mb-8 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Registrar Lector</h2>
+            <input type="text" id="nombreLector" class="w-full p-3 rounded bg-gray-200 text-gray-900 mb-2" placeholder="Nombre">
+            <input type="text" id="nombreLogin" class="w-full p-3 rounded bg-gray-200 text-gray-900 mb-2" placeholder="Usuario">
+            <input type="password" id="contraseña" class="w-full p-3 rounded bg-gray-200 text-gray-900 mb-2" placeholder="Contraseña">
+            <input type="number" id="codCurso" class="w-full p-3 rounded bg-gray-200 text-gray-900 mb-2" placeholder="Código Curso">
+            <button onclick="registrarLector()" class="w-full bg-green-600 text-white p-3 rounded hover:bg-green-700">Registrar</button>
+            <p id="resultadoRegistro" class="text-gray-700 mt-2"></p>
+        </section>
+        
+        <!-- Registrar Préstamo -->
+        <section id="registrarPrestamo" class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Registrar Préstamo</h2>
+            <input type="number" id="idLibroPrestamo" class="w-full p-3 rounded bg-gray-200 text-gray-900 mb-2" placeholder="ID del libro">
+            <input type="number" id="idLectorPrestamo" class="w-full p-3 rounded bg-gray-200 text-gray-900 mb-2" placeholder="ID del lector">
+            <button onclick="registrarPrestamo()" class="w-full bg-purple-600 text-white p-3 rounded hover:bg-purple-700">Prestar</button>
+            <p id="resultadoPrestamo" class="text-gray-700 mt-2"></p>
+        </section>
+    </div>
+    
+    <script>
+        async function buscarLibros() {
+            const titulo = document.getElementById("titulo").value;
+            const response = await fetch(`http://localhost:8080/libros/buscar?titulo=${titulo}`);
+            const libros = await response.json();
+            document.getElementById("resultadoLibros").innerHTML = libros.map(libro => 
+                `<li class='p-2 border-b border-gray-300'>${libro.titulo} - ${libro.autor}</li>`
+            ).join('');
+        }
+
+        async function registrarLector() {
+            const nombre = document.getElementById("nombreLector").value;
+            const nombreLogin = document.getElementById("nombreLogin").value;
+            const contraseña = document.getElementById("contraseña").value;
+            const codCurso = document.getElementById("codCurso").value;
+
+            const lector = { nombre, nombrelogin: nombreLogin, contraseña, codCurso };
+            const response = await fetch("http://localhost:8080/lectores", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(lector)
+            });
+
+            document.getElementById("resultadoRegistro").innerText = response.ok 
+                ? "Lector registrado correctamente" 
+                : "Error al registrar lector";
+        }
+
+        async function registrarPrestamo() {
+            const idLibro = document.getElementById("idLibroPrestamo").value;
+            const idLector = document.getElementById("idLectorPrestamo").value;
+
+            const response = await fetch("http://localhost:8080/prestamos/registrar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ libroId: idLibro, lectorId: idLector })
+            });
+
+            document.getElementById("resultadoPrestamo").innerText = response.ok 
+                ? "Préstamo registrado correctamente." 
+                : "Error al registrar préstamo";
+        }
+    </script>
+</body>
+</html>
