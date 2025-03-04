@@ -1,1 +1,30 @@
-<p>register-page works!</p>
+<div class="flex flex-column align-items-start" 
+     style="width: 300px; margin: auto; margin-top: 10vh;">
+  <span class="text-lg mb-4">Registro</span>
+
+  <mat-form-field style="width: 100%;">
+    <mat-label>Usuario</mat-label>
+    <input type="text" matInput placeholder="Nombre de usuario">
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%;">
+    <mat-label>Nombre</mat-label>
+    <input type="text" matInput placeholder="Nombre">
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%;">
+    <mat-label>Contraseña</mat-label>
+    <input type="password" matInput placeholder="Contraseña">
+  </mat-form-field>
+
+  <button mat-button mat-flat-button color="Primary" style="width: 100%;">
+    <mat-icon>account_circle</mat-icon>
+    Crear cuenta
+  </button>
+
+  <div class="flex justify-content-center mt-5" style="width: 100%;">
+    <a routerLink="/auth/login">
+      Ya tengo cuenta de usuario.
+    </a>
+  </div>
+</div>
