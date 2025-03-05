@@ -1,0 +1,29 @@
+{% extends 'academia/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h2>Lista de inscripciones</h2>
+        {% if inscripciones %}
+            <table class="table table-striped mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Curso</th>
+                        <th>Fecha de inscripcion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscripcion in inscripciones %} <!-- Mostrarr todas las inscripciones que hay en la base de datos -->
+                        <tr>
+                            <td>{{ inscripcion.estudiante.nombre }}</td>
+                            <td>{{ inscripcion.curso.nombre }}</td>
+                            <td>{{ inscripcion.fecha_inscripcion }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %} <!-- Si no hay ninguna inscripcion va a mostrar este mensaje, asi que tendras que añadir alguna manualmente -->
+            <p class="alert alert-warning">No hay ninguna inscripcion por el momento...</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'academia/base.html' %}
+{% block content %}
+<h2>Lista de Estudiantes</h2>
+<a href="{% url 'nuevo_estudiante' %}" class="btn btn-success">Nuevo Estudiante</a>
+<table class="table">
+    <tr><th>Nombre</th><th>Mail</th><th>Acciones</th></tr>
+    {% for estudiante in estudiantes %} <!-- Muestreo de cada estudiante que tengamos en la BBDD -->
+    <tr>
+        <td>{{ estudiante.nombre }}</td>
+        <td>{{ estudiante.correo }}</td>
+        <td>
+            <a href="{% url 'editar_estudiante' estudiante.id %}" class="btn btn-info">Editar</a> <!-- Redireccion al menu de editar estudiante -->
+            <a href="{% url 'borrar_estudiante' estudiante.id %}" class="btn btn-danger">Borrar</a> <!-- Redireccion al menu de borrar el estudiante seleccionado -->
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
