@@ -1,0 +1,18 @@
+{% extends 'library/base.html' %}
+{% block title %}Detalles del Autor{% endblock %}
+
+{% block content %}
+<h2>{{ author.first_name }} {{ author.last_name }}</h2>
+<p><strong>Fecha de Nacimiento:</strong> {{ author.birth_date }}</p>
+
+<h3>Libros escritos:</h3>
+<ul>
+    {% for book in books %}
+        <li>{{ book.title }}</li>
+    {% empty %}
+        <p>Este autor no tiene libros registrados.</p>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'author_list' %}" class="btn btn-secondary">Volver a la lista de autores</a>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'library/base.html' %}
+{% block title %}Registrar Préstamo{% endblock %}
+
+{% block content %}
+<h2>Registrar un Nuevo Préstamo</h2>
+{% if error %}
+<p class="text-danger">{{ error }}</p>
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="book" class="form-label">Libro</label>
+        {{ form.book }}
+    </div>
+    <div class="mb-3">
+        <label for="borrower" class="form-label">Prestatario</label>
+        {{ form.borrower }}
+    </div>
+    <button type="submit" class="btn btn-success">Guardar Préstamo</button>
+</form>
+<a href="{% url 'loan_list' %}" class="btn btn-secondary">Cancelar</a>
+{% endblock %}

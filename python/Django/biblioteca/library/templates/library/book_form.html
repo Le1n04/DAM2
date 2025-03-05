@@ -1,0 +1,29 @@
+{% extends 'library/base.html' %}
+{% block title %}Agregar/Editar Libro{% endblock %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Editar Libro{% else %}Agregar Libro{% endif %}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_title" class="form-label">Título</label>
+        {{ form.title }}
+    </div>
+    <div class="mb-3">
+        <label for="id_publication_date" class="form-label">Fecha de Publicación</label>
+        {{ form.publication_date }}
+    </div>
+    <div class="mb-3">
+        <label for="id_editorial" class="form-label">Editorial</label>
+        {{ form.editorial }}
+    </div>
+    <div class="mb-3">
+        <label for="id_authors" class="form-label">Autores</label>
+        {{ form.authors }}
+    </div>
+    
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'book_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

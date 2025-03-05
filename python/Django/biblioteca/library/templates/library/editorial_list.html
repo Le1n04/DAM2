@@ -1,0 +1,35 @@
+{% extends 'library/base.html' %}
+{% block title %}Lista de Editoriales{% endblock %}
+
+{% block content %}
+<h2>Lista de Editoriales</h2>
+<a href="{% url 'editorial_create' %}" class="btn btn-primary mb-3">Agregar Editorial</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for editorial in editoriales %}
+        <tr>
+            <td>{{ editorial.name }}</td>
+            <td>
+                <a href="{% url 'editorial_edit' editorial.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="{% url 'editorial_delete' editorial.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" class="text-center">No hay editoriales registradas.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'menu' %}" class="btn btn-secondary mt-3">Volver al Menú</a>
+{% endblock %}

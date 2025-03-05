@@ -1,0 +1,12 @@
+{% extends 'library/base.html' %}
+{% block title %}Menú Principal{% endblock %}
+
+{% block content %}
+<h2>Menú Principal</h2>
+<div class="list-group">
+    <a href="{% url 'author_list' %}" class="list-group-item list-group-item-action">Gestionar Autores</a>
+    <a href="{% url 'book_list' %}" class="list-group-item list-group-item-action">Gestionar Libros</a>
+    <a href="{% url 'loan_list' %}" class="list-group-item list-group-item-action">Gestionar Préstamos</a>
+    <a href="{% url 'editorial_list' %}" class="list-group-item list-group-item-action">Gestionar Editoriales</a>
+</div>
+{% endblock %}
