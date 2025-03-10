@@ -8,6 +8,7 @@ import { MaterialModule } from '../material/material.module';
 
 
 
+
 @NgModule({
   declarations: [
     LayoutPageComponent,
@@ -16,8 +17,10 @@ import { MaterialModule } from '../material/material.module';
   ],
   imports: [
     CommonModule,
+    MaterialModule,
+
     AuthRoutingModule,
-    MaterialModule
+    
   ]
 })
 export class AuthModule { }

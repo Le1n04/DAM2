@@ -1,156 +1,64 @@
 package ejercicio;
 
-import okhttp3.*;
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
 import org.json.JSONObject;
+
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
-public class WeatherClient
-{
-	// clave de la api para acceder a los datos del clima
-	private static final String API_KEY = "c082ee6538b341639de180414251402"; // reemplaza con una clave valida
-	// url base de la api
-	private static final String BASE_URL = "http://api.weatherapi.com/v1";
-	// cliente http para hacer las peticiones
-	private static final OkHttpClient client = new OkHttpClient();
-	// objeto scanner para leer entrada del usuario
-	private static final Scanner input = new Scanner(System.in);
+public class WeatherClient {
 
-	public static void main(String[] args)
-	{
-		while (true)
-		{
-			// mostrar menu de opciones
-			System.out.println("\nmenu:");
-			System.out.println("1. consultar el clima actual de una ciudad");
-			System.out.println("2. consultar el pronostico de los proximos dias");
-			System.out.println("3. consultar el clima de una ciudad en un dia concreto");
-			System.out.println("4. salir");
-			System.out.print("elige una opcion: ");
-			int opcion = input.nextInt();
-			input.nextLine();
+    public static void main(String[] args) throws IOException {
+        int port = 8080;
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
-			// ejecutar la opcion seleccionada
-			switch (opcion)
-			{
-			case 1:
-				consultarClimaActual();
-				break;
-			case 2:
-				consultarPronostico();
-				break;
-			case 3:
-				consultarClimaFecha();
-				break;
-			case 4:
-				System.out.println("saliendo...");
-				return;
-			default:
-				System.out.println("opcion no valida.");
-			}
-		}
-	}
+        // Definir el endpoint "/clima"
+        server.createContext("/clima", new ClimaHandler());
 
-	private static void consultarClimaActual()
-	{
-		// solicitar ciudad al usuario
-		System.out.print("ingrese el nombre de la ciudad: ");
-		String ciudad = input.nextLine();
-		String url = BASE_URL + "/current.json?key=" + API_KEY + "&q=" + ciudad;
+        // Crear un thread pool para manejar múltiples solicitudes
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        server.setExecutor(threadPoolExecutor);
 
-		try
-		{
-			// hacer la peticion a la api
-			String response = getRequest(url);
-			JSONObject jsonResponse = new JSONObject(response);
-			JSONObject current = jsonResponse.getJSONObject("current");
+        // Iniciar el servidor
+        server.start();
+        System.out.println("Servidor corriendo en http://0.0.0.0:" + port);
+    }
 
-			// mostrar datos del clima actual
-			System.out.println("\nclima en " + ciudad + ":");
-			System.out.println("temperatura: " + current.getDouble("temp_c") + "°c");
-			System.out.println("condicion: " + current.getJSONObject("condition").getString("text"));
-			System.out.println("humedad: " + current.getInt("humidity") + "%");
-			System.out.println("velocidad del viento: " + current.getDouble("wind_kph") + " km/h");
-		} catch (Exception e)
-		{
-			System.out.println("error al obtener el clima: " + e.getMessage());
-		}
-	}
+    // Manejador para la ruta "/clima"
+    static class ClimaHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("GET".equals(exchange.getRequestMethod())) {
+                // Datos simulados de clima
+                JSONObject json = new JSONObject();
+                json.put("ciudad", "Málaga");
+                json.put("temperatura", "15.4°C");
+                json.put("condicion", "Partly Cloudy");
+                json.put("humedad", "82%");
+                json.put("viento", "15.8 km/h");
 
-	private static void consultarPronostico()
-	{
-		// solicitar ciudad y numero de dias al usuario
-		System.out.print("ingrese el nombre de la ciudad: ");
-		String ciudad = input.nextLine();
-		System.out.print("ingrese el numero de dias de pronostico (max. 10): ");
-		int dias = input.nextInt();
-		input.nextLine();
+                // Convertir el JSON a string para enviarlo como respuesta
+                String response = json.toString();
 
-		String url = BASE_URL + "/forecast.json?key=" + API_KEY + "&q=" + ciudad + "&days=" + dias;
+                // Configurar encabezados de la respuesta
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, response.getBytes().length);
 
-		try
-		{
-			// hacer la peticion a la api
-			String response = getRequest(url);
-			JSONObject jsonResponse = new JSONObject(response);
-			JSONObject forecast = jsonResponse.getJSONObject("forecast");
+                // Escribir la respuesta al cliente
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
 
-			// mostrar datos del pronostico
-			System.out.println("\npronostico para " + ciudad + ":");
-			for (int i = 0; i < dias; i++)
-			{
-				JSONObject day = forecast.getJSONArray("forecastday").getJSONObject(i);
-				System.out.println("fecha: " + day.getString("date"));
-				JSONObject dayInfo = day.getJSONObject("day");
-				System.out.println("temperatura maxima: " + dayInfo.getDouble("maxtemp_c") + "°c");
-				System.out.println("temperatura minima: " + dayInfo.getDouble("mintemp_c") + "°c");
-				System.out.println("condicion: " + dayInfo.getJSONObject("condition").getString("text"));
-				System.out.println("-------------------------------------------------");
-			}
-		} catch (Exception e)
-		{
-			System.out.println("error al obtener el pronostico: " + e.getMessage());
-		}
-	}
-
-	private static void consultarClimaFecha()
-	{
-		// solicitar ciudad y fecha al usuario
-		System.out.print("ingrese el nombre de la ciudad: ");
-		String ciudad = input.nextLine();
-		System.out.print("ingrese la fecha en formato yyyy-mm-dd: ");
-		String fecha = input.nextLine();
-
-		String url = BASE_URL + "/history.json?key=" + API_KEY + "&q=" + ciudad + "&dt=" + fecha;
-
-		try
-		{
-			// hacer la peticion a la api
-			String response = getRequest(url);
-			JSONObject jsonResponse = new JSONObject(response);
-			JSONObject forecast = jsonResponse.getJSONObject("forecast");
-
-			// mostrar datos del clima historico
-			System.out.println("\nhistorial del clima en " + ciudad + " para " + fecha + ":");
-			JSONObject day = forecast.getJSONArray("forecastday").getJSONObject(0).getJSONObject("day");
-			System.out.println("temperatura maxima: " + day.getDouble("maxtemp_c") + "°c");
-			System.out.println("temperatura minima: " + day.getDouble("mintemp_c") + "°c");
-			System.out.println("condicion: " + day.getJSONObject("condition").getString("text"));
-		} catch (Exception e)
-		{
-			System.out.println("error al obtener el historial: " + e.getMessage());
-		}
-	}
-
-	private static String getRequest(String url) throws IOException
-	{
-		// realizar la peticion http
-		Request request = new Request.Builder().url(url).build();
-		try (Response response = client.newCall(request).execute())
-		{
-			if (!response.isSuccessful())
-				throw new IOException("error en la respuesta: " + response);
-			return response.body().string();
-		}
-	}
+                System.out.println("Solicitud GET recibida, respuesta enviada");
+            } else {
+                // Si el método HTTP no es GET, devolver error 405 (Method Not Allowed)
+                exchange.sendResponseHeaders(405, -1);
+            }
+        }
+    }
 }
